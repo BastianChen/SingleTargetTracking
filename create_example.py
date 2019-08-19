@@ -53,8 +53,8 @@ if __name__ == '__main__':
     test_img = r"./datasets/test_img"
 
     # 创建训练数据
-    createBgPhoto(bg_imgs_train, train_img)
-    pasteMinions(train_img, minions, train_img)
+    # createBgPhoto(bg_imgs_train, train_img)
+    # pasteMinions(train_img, minions, train_img)
     # 创建测试数据
-    # createBgPhoto(bg_imgs_test, test_img)
-    # pasteMinions(test_img, minions, test_img)
+    createBgPhoto(bg_imgs_test, test_img)
+    pasteMinions(test_img, minions, test_img)

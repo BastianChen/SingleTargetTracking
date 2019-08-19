@@ -3,13 +3,15 @@ import os
 import PIL.Image as pimg
 import numpy as np
 import torch
+from torchvision import transforms
 
 '''该类用于创建获取数据集类'''
 
 
 class datasets(data.Dataset):
-    def __init__(self, path):
+    def __init__(self, path, transforms):
         self.path = path
+        self.transforms = transforms
         self.dataset = []
         self.dataset.extend(os.listdir(path))
 
@@ -19,9 +21,17 @@ class datasets(data.Dataset):
     def __getitem__(self, index):
         label = torch.Tensor(np.array(self.dataset[index].split(".")[1:-1], dtype=np.int))
         img = pimg.open(os.path.join(self.path, self.dataset[index]))
-        img_data = torch.Tensor((np.array(img) / 255 - 0.5).transpose(2, 0, 1))
+        img_data = torch.Tensor(self.transforms(np.array(img)))  # transforms自动将图片格式转成n,c,h,w
         return img_data, label
 
+
+trans = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize([0.5], [0.5])
+])
+
+# train_data = datasets(r"./datasets/train_img", trans)
+test_data = datasets(path=r"./datasets/test_img", transforms=trans)
 
 if __name__ == '__main__':
     train_img = r"./datasets/train_img"

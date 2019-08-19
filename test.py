@@ -1,22 +1,22 @@
 import PIL.Image as pimg
 import PIL.ImageDraw as draw
 import PIL.ImageFont as font
-from dataset import datasets
+from dataset import test_data
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
-data = datasets(r"./datasets/test_img")
-test_data = DataLoader(data, 1, shuffle=True)
+# data = datasets(r"./datasets/test_img")
+test_loader = DataLoader(test_data, 1, shuffle=True)
 net = torch.load("models/net.pth")
 net.eval()
 # 定义字体
 font_path = r"font/simkai.ttf"
 font = font.truetype(font_path, size=50)
 # 图片保存路径
-save_path = r"./save"
+# save_path = r"./save"
 loss_mse = nn.MSELoss()
 loss_bce = nn.BCELoss()
 # 用于统计测试损失和精度
@@ -24,10 +24,10 @@ loss_total = 0
 acc_confidence_total = 0
 acc_coordinate_total = 0
 index = 1
-for data in test_data:
+for data in test_loader:
     img_data, label = data
     # 加载图片
-    img_new = np.array((img_data.numpy().transpose(0, 2, 3, 1) + 0.5) * 255, dtype=np.uint8)
+    img_new = np.array((img_data.numpy().transpose(0, 2, 3, 1) * 0.5 + 0.5) * 255, dtype=np.uint8)
     # 降维
     img = pimg.fromarray(img_new[0])
     img_draw = draw.ImageDraw(img)
@@ -61,7 +61,7 @@ for data in test_data:
     plt.pause(1)
     plt.ioff()
     # 保存图片
-    img.save("{0}/{1}.png".format(save_path, str(index)))
+    # img.save("{0}/{1}.png".format(save_path, str(index)))
     index += 1
     # 计算损失
     coordinate_loss = loss_mse(coordinate_output, coordinate)
